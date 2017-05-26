@@ -22,10 +22,14 @@ public class Rocket : MonoBehaviour
     public Text monoPropellantText;
     public GameObject gameState;
     public GameObject landingPad;
+    public GameObject bubble;
+    public GameObject arrow;
     private Rigidbody2D rb;
     private Vector2 startPosition;
     private Quaternion startRotation;
     public bool finished;
+    public bool outOfBounds;
+    private const int mld = 10000000;
     private Rect leftInputField = new Rect(
         0, 0, 
         Screen.width / 4, Screen.height / 3);
@@ -48,8 +52,13 @@ public class Rocket : MonoBehaviour
         
         rb = gameObject.GetComponent<Rigidbody2D>();
         updateRigidbody();
+
         startPosition = transform.position;
         startRotation = transform.rotation;
+
+
+        bubble.transform.position = new Vector3(mld, mld, mld);
+
         reset();
     }
 
@@ -191,5 +200,53 @@ public class Rocket : MonoBehaviour
         {
             processInput();
         }
+
+        if (outOfBounds)
+        {
+            Vector2 pos = Camera.main.WorldToScreenPoint(transform.position);
+            Vector2 bub = Camera.main.WorldToScreenPoint(bubble.GetComponent<SpriteRenderer>().bounds.size);
+            Vector2 magicNumber = new Vector2(6,8);
+            Vector3 newBubblePosition = new Vector3();
+            if (pos.x > Screen.width - bub.x / magicNumber.x)
+            {
+                newBubblePosition.x = Screen.width - bub.x / magicNumber.x;
+            }
+            else if (pos.x < bub.x / magicNumber.x)
+            {
+                newBubblePosition.x = bub.x / magicNumber.x;
+            }
+            else
+            {
+                newBubblePosition.x = pos.x;
+            }
+            if (pos.y > Screen.height - bub.y / magicNumber.y)
+            {
+                newBubblePosition.y = Screen.height - bub.y / magicNumber.y;
+            }
+            else
+            {
+                newBubblePosition.y = pos.y;
+            }
+            newBubblePosition.z = 0;
+            bubble.transform.position = Camera.main.ScreenToWorldPoint(newBubblePosition);
+            bubble.transform.position = new Vector3(bubble.transform.position.x, bubble.transform.position.y, 0);
+            arrow.transform.position = bubble.transform.position;
+            
+            Vector3 direction = transform.position - arrow.transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
+            arrow.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+    }
+
+    void OnBecameInvisible()
+    {
+        outOfBounds = true;
+    }
+
+    void OnBecameVisible()
+    {
+        outOfBounds = false;
+        bubble.transform.position = new Vector3(mld, mld, mld);
+        arrow.transform.position = new Vector3(mld, mld, mld);
     }
 }

@@ -41,7 +41,6 @@ public class Respawner : MonoBehaviour {
             updateTimer();
             if (timer > maxTimer)
             {
-                print(timer);
                 rocket.GetComponent<Rocket>().reset();
                 resetTimer();
             }
