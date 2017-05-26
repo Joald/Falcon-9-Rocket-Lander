@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\GameState.cs" />
+     <Compile Include="Assets\LandingPadScript.cs" />
      <Compile Include="Assets\Respawner.cs" />
      <Compile Include="Assets\Rocket.cs" />
  <Reference Include="UnityEngine.UI">

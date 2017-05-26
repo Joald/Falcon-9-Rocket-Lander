@@ -21,6 +21,7 @@ public class Rocket : MonoBehaviour
     public Text fuelText;
     public Text monoPropellantText;
     public GameObject gameState;
+    public GameObject landingPad;
     private Rigidbody2D rb;
     private Vector2 startPosition;
     private Quaternion startRotation;
@@ -46,9 +47,16 @@ public class Rocket : MonoBehaviour
         JsonUtility.FromJsonOverwrite(s, this);
         
         rb = gameObject.GetComponent<Rigidbody2D>();
+        updateRigidbody();
         startPosition = transform.position;
         startRotation = transform.rotation;
         reset();
+    }
+
+    void updateRigidbody()
+    {
+        rb.gravityScale = gravity;
+        rb.mass = mass;
     }
 
     enum Direction
@@ -88,11 +96,6 @@ public class Rocket : MonoBehaviour
         }
     }
 
-    void updateRigidbody()
-    {
-        rb.gravityScale = gravity;
-        rb.mass = mass;
-    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -102,7 +105,6 @@ public class Rocket : MonoBehaviour
         }
         if (collision.gameObject.name == "Landing Pad")
         {
-            print(collision.relativeVelocity.y);
             if (collision.relativeVelocity.y < 1 && Mathf.Abs(transform.rotation.z) < 15)
             {
                 gameState.GetComponent<GameState>().win();
@@ -132,6 +134,7 @@ public class Rocket : MonoBehaviour
         updateFuelText();
         updateMonoPropellantText();
         rb.WakeUp();
+        landingPad.GetComponent<LandingPadScript>().randomize();
     }
 
     void processInput()
@@ -183,7 +186,6 @@ public class Rocket : MonoBehaviour
 
     void Update()
     {
-        updateRigidbody();
         v = rb.velocity.y;
         if (!finished)
         {

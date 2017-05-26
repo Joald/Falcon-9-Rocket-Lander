@@ -37,7 +37,6 @@ public class GameState : MonoBehaviour {
         score.tries++;
         StreamWriter sw = new StreamWriter("score.json");
         string s = JsonUtility.ToJson(score);
-        print(s);
         sw.Write(s);
         sw.Close();
         updateScoreText();
@@ -47,6 +46,10 @@ public class GameState : MonoBehaviour {
     {
         score.tries++;
         score.wins++;
+        StreamWriter sw = new StreamWriter("score.json");
+        string s = JsonUtility.ToJson(score);
+        sw.Write(s);
+        sw.Close();
         updateScoreText();
     }
 
