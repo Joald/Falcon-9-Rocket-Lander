@@ -45,17 +45,24 @@ public class Rocket : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        StreamReader sr = new StreamReader("params.json");
-        string s = sr.ReadToEnd();
-        sr.Close();
-        JsonUtility.FromJsonOverwrite(s, this);
-        
+        if (System.IO.File.Exists(Application.persistentDataPath + "/params.json"))
+        {
+            StreamReader sr = new StreamReader("params.json");
+            string s = sr.ReadToEnd();
+            sr.Close();
+            JsonUtility.FromJsonOverwrite(s, this);
+        }
+        else
+        {
+            string json = "{\"engineStrength\":5.0,\"fuelCapacity\":12.0,\"fuelConsumption\":0.05,\"mass\":2.0,\"tiltStrength\":0.2,\"gravity\":0.15,\"monoPropellantCapacity\":5.0,\"propellantConsumption\":0.02}";
+            JsonUtility.FromJsonOverwrite(json, this);
+        }
+
         rb = gameObject.GetComponent<Rigidbody2D>();
         updateRigidbody();
 
         startPosition = transform.position;
         startRotation = transform.rotation;
-
 
         bubble.transform.position = new Vector3(mld, mld, mld);
 

@@ -19,11 +19,21 @@ public class GameState : MonoBehaviour {
 	// Use this for initialization
 	void Start()
     {
-        StreamReader sr = new StreamReader("score.json");
-        string s = sr.ReadToEnd();
-        sr.Close();
         score = new Score();
-        JsonUtility.FromJsonOverwrite(s, score);
+        if (System.IO.File.Exists(Application.persistentDataPath + "/score.json"))
+        {
+            StreamReader sr = new StreamReader(Application.persistentDataPath + "/score.json");
+            string s = sr.ReadToEnd();
+            sr.Close();
+            JsonUtility.FromJsonOverwrite(s, score);
+        }
+        else
+        {
+            score.tries = 0;
+            score.wins = 0;
+        }
+
+        
         updateScoreText();
 	}
 
@@ -32,25 +42,25 @@ public class GameState : MonoBehaviour {
         scoreText.text = "Score: " + score.wins + "/" + score.tries;
     }
 
-    public void lose()
+    void writeScore()
     {
-        score.tries++;
-        StreamWriter sw = new StreamWriter("score.json");
+        StreamWriter sw = new StreamWriter(Application.persistentDataPath + "/score.json");
         string s = JsonUtility.ToJson(score);
         sw.Write(s);
         sw.Close();
+    }
+
+    public void lose()
+    {
+        score.tries++;
+        writeScore();
         updateScoreText();
     }
 
     public void win()
     {
-        score.tries++;
         score.wins++;
-        StreamWriter sw = new StreamWriter("score.json");
-        string s = JsonUtility.ToJson(score);
-        sw.Write(s);
-        sw.Close();
-        updateScoreText();
+        lose();
     }
 
 	// Update is called once per frame

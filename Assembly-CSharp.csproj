@@ -46,7 +46,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\BubbleScript.cs" />
      <Compile Include="Assets\GameState.cs" />
      <Compile Include="Assets\LandingPadScript.cs" />
      <Compile Include="Assets\Respawner.cs" />
