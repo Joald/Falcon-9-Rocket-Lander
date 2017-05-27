@@ -33,9 +33,9 @@ public class GameState : MonoBehaviour {
             score.wins = 0;
         }
 
-        
         updateScoreText();
-	}
+        Screen.orientation = ScreenOrientation.Portrait;
+    }
 
     void updateScoreText()
     {
